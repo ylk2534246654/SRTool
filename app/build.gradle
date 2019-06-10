@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+//apply plugin: 'me.ele.mess'
+//mess {
+//    ignoreProguard 'com.jakewharton:butterknife'
+//}
+android {
+    compileSdkVersion 23
+    defaultConfig {
+        applicationId "com.yx.srtool"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode 1
+        versionName "beta1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    /*
+    signingConfigs {
+        debug {}
+        release {
+            //密匙内容，请换成自己的
+            storeFile file("D:/Android/test.jks")
+            storePassword "123456"
+            keyAlias "Test"
+            keyPassword "123456"
+        }
+    }
+    */
+    buildTypes {
+        release {
+            buildConfigField "boolean", "LOG_DEBUG", "false" //不显示log
+            shrinkResources false//删除无用资源
+            minifyEnabled true//开启混淆
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //signingConfig signingConfigs.config//配置签名文件文件，必须先定义，才能引用
+        }
+    }
+}
+
+dependencies {
+    //加载Markdown https://github.com/noties/Markwon
+    final def   markwon_version ='3.0.0-SNAPSHOT'
+
+    implementation  "ru.noties.markwon:core:$markwon_version"
+    implementation  "ru.noties.markwon:html:$markwon_version"
+    implementation "ru.noties.markwon:syntax-highlight:$markwon_version"
+    //implementation project(':markwon-core')
+    //Toolbar
+    implementation 'com.android.support:design:23.1.0'
+
+    implementation 'com.android.support:cardview-v7:23.1.0'
+    //recyclerview
+    implementation 'com.android.support:recyclerview-v7:23.1.0'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:23.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    //testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+}

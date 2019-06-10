@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.yx.srtool.View.MyScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:fillViewport="true"
+        android:scrollbarAlwaysDrawHorizontalTrack="true">
+        <com.yx.srtool.View.MyEditText
+            android:id="@+id/EditText_Code"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="13dp"
+            android:enabled="true"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"
+            android:background="@drawable/edit_background"
+            >
+        </com.yx.srtool.View.MyEditText>
+    </com.yx.srtool.View.MyScrollView>
+</LinearLayout>
