@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.yx.srtool.Activity.MainActivity;
@@ -37,10 +38,9 @@ public class FileUtil {
     public static String read(String filepath) throws Exception {
         StringBuilder sb = new StringBuilder("");
         if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-            String path = MainActivity.path+filepath;
             //filename = context.getExternalCacheDir().getAbsolutePath() + java.io.File.separator + path;
             //打开文件输入流
-            FileInputStream inputStream = new FileInputStream(path);
+            FileInputStream inputStream = new FileInputStream(filepath);
 
             Thread.sleep(200);
             byte[] buffer = new byte[1024];
@@ -204,6 +204,7 @@ public class FileUtil {
     {
         try{
             InputStream fosfrom = new FileInputStream(fromFile);
+
             OutputStream fosto = new FileOutputStream(toFile);
             byte bt[] = new byte[1024];
             int c;
@@ -217,6 +218,20 @@ public class FileUtil {
         } catch (Exception ex)
         {
             return -1;
+        }
+    }
+    /**
+     * 获取文件名及后缀
+     */
+    public static String getFileNameWithSuffix(String path) {
+        if(TextUtils.isEmpty(path)){
+            return "";
+        }
+        int start = path.lastIndexOf("/");
+        if (start != -1 ) {
+            return path.substring(start + 1);
+        } else {
+            return "";
         }
     }
     /**

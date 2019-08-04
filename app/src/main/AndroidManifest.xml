@@ -33,6 +33,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="srtool"/>
+                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="jundroo.com" />
                 <data android:pathPrefix="/ViewShip.html"/>
             </intent-filter>
@@ -43,7 +45,7 @@
             android:icon="@drawable/icon_sr"
             android:launchMode="singleTop"
             android:screenOrientation="unspecified"
-            android:theme="@style/Theme.Dialog"
+            android:theme="@style/Dialog"
             android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -62,6 +64,8 @@
                 <!--注意下面是 content -->
                 <data android:scheme="file" />
                 <data android:scheme="content" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="*" />
                 <data android:mimeType="*/*" />
                 <data android:pathPattern=".*\\.srmod" />
@@ -72,8 +76,32 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="file" />
                 <data android:scheme="content" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="*" />
                 <data android:mimeType="	text/*" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".i.ShipPoint"
+            android:label="简单火箭存档"
+            android:icon="@drawable/icon_sr"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/Dialog"
+            android:configChanges="keyboardHidden|orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="file" />
+                <data android:scheme="content" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="*" />
+                <data android:mimeType="	text/*" />
+                <data android:mimeType="application/hcy" />
+                <data android:mimeType="application/octet-stream" />
             </intent-filter>
         </activity>
         <activity android:name=".i.AboutPoint"></activity>
@@ -89,6 +117,7 @@
             android:hardwareAccelerated="false"
             android:largeHeap="true">
         </activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.yx.srtool.fileprovider"

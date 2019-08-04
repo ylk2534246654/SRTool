@@ -1,8 +1,12 @@
 package com.yx.srtool.i;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.yx.srtool.Activity.MainActivity;
+
+import java.io.File;
 
 /**
  * Created by Yx on 2019/5/9.
@@ -33,6 +37,7 @@ public class MainPoint extends MainActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         new over();
     }
 }

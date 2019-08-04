@@ -102,7 +102,6 @@ public class MainActivity extends AppCompatActivity {
             init_permission();
             //初始化
             init();
-
         }catch (Exception e){
         }
     }
@@ -154,6 +153,14 @@ public class MainActivity extends AppCompatActivity {
                 //下载存档
                 DownloadFile(ID);
             }
+        }
+        if(intent.getStringExtra("mod").indexOf("true")!=-1){
+            Toast.makeText(TContext, "导入Mod", Toast.LENGTH_SHORT).show();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setClassName("com.jundroo.simplerockets", "com.jundroo.simplerockets.MainActivity");
+            Uri uri = Uri.fromFile(new File(intent.getStringExtra("path")));
+            intent.setData(uri);
+            startActivityForResult(intent, 1);
         }
     }
 
@@ -253,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
         String data = null;
         try {
             //读取配置文件
-            data = FileUtil.read("SimpleRockets-UserSettings.txt");
+            data = FileUtil.read(MainActivity.path+"SimpleRockets-UserSettings.txt");
             String data2 = Util.substring(data,"fpsEnabled=\"","\"");
             if (data2!=null && data2.equals("1")){
                 CheckBox_FPS.setChecked(true);
@@ -336,16 +343,17 @@ public class MainActivity extends AppCompatActivity {
         //赋值WindowManager&LayoutParam.
         params = new WindowManager.LayoutParams();
         windowManager = (WindowManager) getApplication().getSystemService(Context.WINDOW_SERVICE);
+        /*
         //设置type.系统提示型窗口，一般都在应用程序窗口之上.
-/*                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//https://blog.csdn.net/qq_23374873/article/details/80718948
-                    //关于 8.0以上
-                    params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-                }else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//https://blog.csdn.net/qq_23374873/article/details/80718948
+            //关于 8.0以上
+            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        }else {
 
-                }*/
+        }
+        */
         //关于 8.0以下
         params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT;
-
         //设置效果为背景透明.
         params.format = PixelFormat.RGBA_8888;
         //设置flags.不可聚焦及不可使用按钮对悬浮窗进行操控.
@@ -458,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
                         windowManager.updateViewLayout(toucherLayout, params);
                         handler_time.postDelayed(runnable,5);
                     }else {
-                        Toast.makeText(MainActivity.this, "透明", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "滑动", Toast.LENGTH_SHORT).show();
                     }
                 }else {
                     if(params.x>0){
@@ -466,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
                         windowManager.updateViewLayout(toucherLayout, params);
                         handler_time.postDelayed(runnable,5);
                     }else {
-                        Toast.makeText(MainActivity.this, "透明", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "滑动", Toast.LENGTH_SHORT).show();
                     }
                 }
                 //开始透明
@@ -481,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
         //清除载具目录数据
         data_modifier.clear();
         try {
-            String data = FileUtil.read("Sandbox.xml");
+            String data = FileUtil.read(MainActivity.path+"Sandbox.xml");
             //分割字串符
             String[] ShipNode = data.split("</ShipNode>");
             Log.e("Sandbox",data);

@@ -1,6 +1,8 @@
 package com.yx.srtool.Activity;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -231,6 +233,13 @@ public class RocketDesignActivity extends AppCompatActivity {
                 //保存
                 FileUtil.write("ships/"+ MainActivity.ship_name,RocketView.ship);
                 Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menu_p:
+                //导出图片
+                RocketView.saveimage(this);
+
+                Toast.makeText(this, "图片已保存至sd卡根目录", Toast.LENGTH_SHORT).show();
+
                 return true;
         }
 

@@ -1,24 +1,33 @@
 package com.yx.srtool.View;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.yx.srtool.Activity.RocketDesignActivity;
 import com.yx.srtool.Activity.MainActivity;
+import com.yx.srtool.Adapter.GalaxyAdapter;
 import com.yx.srtool.Utils.FileUtil;
 import com.yx.srtool.Utils.Util;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +37,7 @@ import java.util.Map;
  */
 
 public class RocketView extends View{
+    private static Bitmap bitmap;
     private Paint Paint_Line//Paint_Line线
             ,Paint_Texe//Paint_Texe文字
             ,Paint_graph;//Paint_graph图形
@@ -74,7 +84,7 @@ public class RocketView extends View{
             //Sprites_Bitmap : 分割精灵位图
             Sprites_Bitmap = getStringBitmapMap();
             //获取xml文件
-            String sprites_xml = FileUtil.read("PartList.xml");
+            String sprites_xml = FileUtil.read(MainActivity.path+"PartList.xml");
             //解析PartList.xml文件，XML
             PartList_xml = Util.parse_PartListXML(sprites_xml);
             //获取载具文件
@@ -119,11 +129,20 @@ public class RocketView extends View{
     protected void onDraw(Canvas canvas) {
         initDraw(canvas);//初始化画布
         startDraw(canvas);
-        super.onDraw(canvas);
 
+
+        bitmap = Bitmap.createBitmap(canvas.getWidth(),canvas.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas mCanvas = new Canvas(bitmap);
+        //移动中心坐标
+        mCanvas.translate(getWidth()/2,getHeight()/2);
+        //缩放
+        mCanvas.scale(Multiple,Multiple);
+        startImage(mCanvas);
+        super.onDraw(canvas);
     }
 
     private void initDraw(Canvas canvas) {
+
         //canvas.scale(1,-1);// 翻转Y轴
         //设置背景
         Bitmap Back = Bitmap.createScaledBitmap(Background, getWidth(), getHeight(), true);
@@ -349,6 +368,82 @@ public class RocketView extends View{
     }
 
 
+    private void startImage(Canvas canvas) {
+        try {
+            for(int i =0;i<Ships_List.size();i++) {
+                Map<String,String> Ships_Parameter = Ships_List.get(i);
+                Map<String,String> Ships_png_path = PartList_xml.get(Ships_Parameter.get("partType"));
+                Bitmap Ships_Parameter_Bitmap,Ships_Parameter_Bitmap2 = null,Ships_Parameter_Bitmap3 = null;
+                boolean landerleg = false;
+                //判断当前是否是着陆架
+                if(Ships_png_path.get("sprite").toLowerCase().indexOf("landerlegpreview.png")!=-1){
+                    Ships_Parameter_Bitmap = Sprites_Bitmap.get("landerlegjoint.png");//头
+                    Ships_Parameter_Bitmap2 = Sprites_Bitmap.get("landerleglower.png");//支
+                    Ships_Parameter_Bitmap3 = Sprites_Bitmap.get("landerlegupper.png");//管
+                    landerleg = true;
+                }else {
+                    Ships_Parameter_Bitmap = Sprites_Bitmap.get(Ships_png_path.get("sprite").toLowerCase());//Bitmap,png格式
+                }
+
+                try {
+                    //计算角度
+                    float angle = (float) -(Float.parseFloat(Ships_Parameter.get("angle"))*((90/(Math.PI/2))));
+                    //图片中心坐标
+                    int offsetX = Ships_Parameter_Bitmap.getWidth() / 2;
+                    int offsetY = Ships_Parameter_Bitmap.getHeight() / 2;
+                    //图片变形
+                    Matrix matrix = new Matrix();
+                    Matrix matrix2 = new Matrix();
+                    //旋转： 往自身的移动半宽，半长
+                    matrix.postTranslate(-offsetX, -offsetY);
+                    //如果当前为着陆架
+                    if(landerleg){
+                        matrix2.postTranslate(- Ships_Parameter_Bitmap2.getWidth() / 2, - Ships_Parameter_Bitmap2.getWidth() / 2);
+                        matrix2.postRotate(180+angle);
+                    }
+                    //旋转
+                    matrix.postRotate(angle);
+                    //图片翻转
+                    if(Ships_Parameter.get("flippedX")!= null && Ships_Parameter.get("flippedY")!= null){
+                        if(Ships_Parameter.get("flippedX").equals("1")){
+                            matrix.postScale(-1, -1);
+                        }
+                        if(Ships_Parameter.get("flippedY").equals("1")){
+                            matrix.postScale(-1, -1);
+                        }
+                    }
+                    //判断当前是否未接入
+                    if(Ships_Parameter.get("Connections").equals("0")){
+                        //未接入组件
+                        //透明度
+                        //paint.setAlpha( 100 );
+                    }else {
+                        Paint paint = new Paint();
+                        //图片x,y
+                        float Bitmap_x = eventX0+2*(Float.parseFloat(Ships_Parameter.get("x"))*30);
+                        float Bitmap_y = eventY0-2*(Float.parseFloat(Ships_Parameter.get("y"))*30);
+                        //判断是否为着陆架
+                        if(landerleg){
+                            //设置Bitmap坐标
+                            matrix2.postTranslate(Bitmap_x, Bitmap_y);
+                            //渲染出图片
+                            canvas.drawBitmap(Ships_Parameter_Bitmap2, matrix2, paint);
+                            canvas.drawBitmap(Ships_Parameter_Bitmap3, matrix2, paint);
+                        }
+                        //设置Bitmap坐标
+                        matrix.postTranslate(Bitmap_x, Bitmap_y);
+                        //渲染出图片
+                        canvas.drawBitmap(Ships_Parameter_Bitmap, matrix, paint);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 屏幕事件
@@ -494,7 +589,7 @@ public class RocketView extends View{
     private Map<String, Bitmap> getStringBitmapMap() throws Exception {
         Map<String,Bitmap> Sprites_Bitmap = new HashMap<>();
         //获取xml文件
-        String sprites = FileUtil.read("ShipSprites.xml");
+        String sprites = FileUtil.read(MainActivity.path+"ShipSprites.xml");
         //xml解析
         List<Map<String,String>> list = Util.parse_SpritesXML(sprites);
         //根据xml内的参数分割图片
@@ -519,5 +614,33 @@ public class RocketView extends View{
         Ships_Parameter.put("angle",angle+"");
         //Log.e("angle",angle+"");
         Ships_List.set(PartList_ID,Ships_Parameter);
+    }
+
+    public static void saveimage(final RocketDesignActivity rocketDesignActivity) {
+        new AsyncTask(){
+            @Override
+            protected Object doInBackground(Object[] p1)
+            {
+
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMdd-HHmmss");
+                File file=new File(Environment.getExternalStorageDirectory(),sdf.format(System.currentTimeMillis())+".png");
+                try
+                {
+                    String stage="Saving";
+                    file.createNewFile();
+                    FileOutputStream fos=new FileOutputStream(file);
+                    if(bitmap.compress(Bitmap.CompressFormat.PNG,90,fos)){
+                        fos.flush();
+                        fos.close();
+                        stage="Saved As"+"/DCIM/"+sdf.format(System.currentTimeMillis())+".png";
+                        Uri uri = Uri.fromFile(file);
+                        rocketDesignActivity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+                    }
+                }catch (IOException e){
+
+                }
+                return null;
+            }
+        }.execute();
     }
 }

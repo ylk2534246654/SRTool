@@ -6,6 +6,7 @@
 #混淆时采用的算法
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
+-ignorewarnings
 
 
 # 修改包名

@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/menu_p"
+        android:orderInCategory="100"
+        android:title="输出图片"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/menu_baochun"
         android:orderInCategory="100"
         android:title="保存"

@@ -12,5 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/Button_Modifiers"
+        android:enabled="false"
+
         android:text="坐标修改器"/>
 </LinearLayout>

@@ -11,7 +11,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,12 +24,13 @@ import com.yx.srtool.Utils.UriToPathUtil;
 import com.yx.srtool.i.MainPoint;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 
 import ru.noties.markwon.Markwon;
 import ru.noties.markwon.html.HtmlPlugin;
 import ru.noties.markwon.image.ImagesPlugin;
+
+import static com.yx.srtool.Activity.MainActivity.getContext;
 
 /**
  * Created by Yx on 2019/4/25.
@@ -39,10 +39,6 @@ import ru.noties.markwon.image.ImagesPlugin;
 public class ModActivity extends AppCompatActivity {
     //String path;
     private ProgressDialog Dialog;
-
-    public ModActivity() {
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,7 +150,15 @@ public class ModActivity extends AppCompatActivity {
             openSR.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                /*如果API是24以上，打开注释
+                    dialog.cancel();//关闭
+                    Intent intent_activity =
+                            new Intent(ModActivity.this,
+                            MainPoint.class);
+                    intent_activity.putExtra("mod","true");
+                    intent_activity.putExtra("path",path);
+                    startActivity(intent_activity);
+                    /*
+                //如果API是24以上，打开注释
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.setClassName("com.jundroo.simplerockets", "com.jundroo.simplerockets.MainActivity");
@@ -170,7 +174,9 @@ public class ModActivity extends AppCompatActivity {
                 }
                 Log.e("uri",uri+"");
                 startActivityForResult(intent, 1);
+                //startActivity(intent);
                 */
+                    /*
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     intent.setClassName("com.jundroo.simplerockets", "com.jundroo.simplerockets.MainActivity");
@@ -180,9 +186,11 @@ public class ModActivity extends AppCompatActivity {
                     startActivityForResult(intent, 1);
                     dialog.cancel();//关闭
                     //startActivity(intent);
+                    finish();
+                    */
                 }
             });
-        /*
+            /*
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//https://blog.csdn.net/qq_23374873/article/details/80718948
             //关于 8.0以上
             dialog.getWindow().setType(
@@ -193,11 +201,11 @@ public class ModActivity extends AppCompatActivity {
                     (WindowManager.LayoutParams.TYPE_SYSTEM_ALERT));
         }
         */
+        //关于 8.0以下
             dialog.getWindow().setType(
                     (WindowManager.LayoutParams.TYPE_SYSTEM_ALERT));
-
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
                 public void run() {
                     dialog.show();
                 }
